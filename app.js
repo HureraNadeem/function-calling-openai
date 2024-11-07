@@ -46,8 +46,12 @@ app.post('/api/converse', async (req, res) => {
   const message = [
     {
       role: 'system',
-      content:
-        'You are a helpful assistant that will give the information about the stock prices.',
+      content: `
+        You are a helpful assistant that will give the information about the stock prices. 
+        Apologize if you dont know about the company the user asked for.
+        You may tell what sort of companies you are able to provide info about, DO NOT NAME THE COMPANIES.
+        If you do not know about it, you should not assume the sector of the company, No need to comment on the company, just tell that you do not know about it.
+        `,
     },
   ];
   const userMessage = req.body.message;
@@ -77,11 +81,11 @@ app.post('/api/converse', async (req, res) => {
         res.json({ reply: stockData.error });
       } else {
         res.json({
-          reply: `The current price of ${stockSymbol} is ${stockData.price} ${stockData.currency}.`,
+          message: `The current price of ${stockSymbol} is ${stockData.price} ${stockData.currency}.`,
         });
       }
     } else {
-      res.json({ reply: messageData.content });
+      res.json({ message: messageData.content });
     }
   } catch (error) {
     console.error('Error in chat completion:', error);
